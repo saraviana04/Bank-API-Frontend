@@ -10,4 +10,14 @@ public class BankApiApplication {
 		SpringApplication.run(BankApiApplication.class, args);
 	}
 
+	@org.springframework.context.annotation.Bean
+	public org.springframework.web.servlet.config.annotation.WebMvcConfigurer corsConfigurer() {
+		return new org.springframework.web.servlet.config.annotation.WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
+				registry.addMapping("/**").allowedOrigins("*").allowedMethods("*");
+			}
+		};
+	}
+
 }
