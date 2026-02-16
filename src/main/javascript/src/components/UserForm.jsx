@@ -14,9 +14,19 @@ export default function UserForm({ onUserAdded }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
         setMessage(null);
 
+        const idadeNum = Number(formData.idade);
+        if (!Number.isFinite(idadeNum)) {
+            setMessage({ type: 'error', text: 'Informe uma idade válida.' });
+            return;
+        }
+        if (idadeNum < 18) {
+            setMessage({ type: 'error', text: 'A idade mínima para cadastro é 18 anos.' });
+            return;
+        }
+
+        setLoading(true);
         try {
             const response = await axios.post('http://localhost:8080/api/users', formData);
             setMessage({ type: 'success', text: 'Usuário cadastrado com sucesso!' });
@@ -27,10 +37,8 @@ export default function UserForm({ onUserAdded }) {
             let errorMsg = 'Erro ao cadastrar usuário';
 
             if (error.response) {
-                // O servidor respondeu com um status de erro
                 errorMsg = error.response.data?.message || `Erro do servidor (${error.response.status})`;
             } else if (error.request) {
-                // A requisição foi feita mas sem resposta (erro de rede/CORS)
                 errorMsg = 'Erro de conexão com o servidor using.';
             } else {
                 errorMsg = error.message;
@@ -65,7 +73,6 @@ export default function UserForm({ onUserAdded }) {
                         <input
                             type="number"
                             required
-                            min="18"
                             value={formData.idade}
                             onChange={(e) => setFormData({ ...formData, idade: e.target.value })}
                         />
